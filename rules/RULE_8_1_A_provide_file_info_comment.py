@@ -62,16 +62,35 @@ def RunRule(lexer, filename, dirname):
 
     token = lexer.GetNextToken()
 
+    results= {
+            "@file": False,
+            "@brief": False,
+            "@details": False,
+            "@author": False,
+            "@date": False,
+            "@version": False,
+            "@copyright": False,
+            }
+
     while True:
         if token is None or token.type not in ("COMMENT", "CPPCOMMENT"):
             error(lexer)
             return
 
-        if token.value.lower().find("copyright") != - \
-                1 or token.value.lower().find("license") != -1:
-            return
+        for keyword in results.keys():
+            if token.value.lower().find(keyword) != -1:
+                results[keyword] = True
+
+        if token.value.lower().find("@license") != -1:
+            results["@copyright"] = True
 
         token = lexer.GetNextTokenSkipWhiteSpace()
+
+        if all(results.values()):
+            return
+    print(results)
+
+
 
 
 ruleManager.AddFileStartRule(RunRule)
@@ -87,8 +106,14 @@ class testRule(nct):
 
     def test1(self):
         self.Analyze("thisfile.c",
-                     """// license
-// copyright
+                     """// @license
+// @copyright
+// @version
+// @date
+// @file
+// @brief
+// @details
+// @author
 """)
         self.ExpectSuccess(__name__)
 
@@ -97,8 +122,14 @@ class testRule(nct):
                      """/**
 #if 0
 #endif
-license
-coryright */ """)
+@license
+@version
+@date
+@file
+@brief
+@details
+@author
+@coryright */ """)
         self.ExpectSuccess(__name__)
 
     def test3(self):
@@ -121,15 +152,27 @@ coryright */ """)
         self.Analyze("thisfile.c",
                      """
 #define "WEWE"
-// license
-// copyright
+// @license
+// @copyright
+// @author
+// @date
+// @version
+// @details
+// @brief
 #include </ewe/kk> """)
         self.ExpectError(__name__)
 
     def test6(self):
         self.Analyze("thisfile.c",
-                     """// license
-// copyright
+                     """// @license
+// @copyright
+// @file
+// @brief
+// @details
+// @author
+// @version
+// @date
+
 #define "WEWE"
 #include </ewe/kk> """)
         self.ExpectSuccess(__name__)
@@ -137,8 +180,14 @@ coryright */ """)
     def test7(self):
         self.Analyze("thisfile.c",
                      """/*
- * license
- * copyright
+ * @license
+ * @copyright
+ * @file
+ * @brief
+ * @details
+ * @author
+ * @version
+ * @date
  */
 """)
         self.ExpectSuccess(__name__)

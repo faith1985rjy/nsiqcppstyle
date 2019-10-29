@@ -31,7 +31,7 @@ from nsiqcppstyle_rulemanager import *
 
 
 def RunRule(lexer, currentType, fullName, decl, contextStack, context):
-    if not decl and currentType in ("STRUCT", "UNION") and context is not None:
+    if not decl and currentType in ("STRUCT", "UNION", "ENUM") and context is not None:
         t = lexer.GetCurToken()
         lexer.PushTokenIndex()
         t2 = lexer.GetPrevTokenInType("COMMENT")

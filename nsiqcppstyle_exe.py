@@ -290,9 +290,7 @@ def main(argv=None):
                         fileExtension = fname[fname.rfind('.') + 1:]
                         eachFile = os.path.join(root, fname)
                         basePart = eachFile[len(targetPath):]
-                        if fileExtension in cExtendstionSet and
-                                basefilelist.IsNewOrChanged(eachFile) and
-                                filter.CheckFileInclusion(basePart):
+                        if fileExtension in cExtendstionSet and basefilelist.IsNewOrChanged(eachFile) and filter.CheckFileInclusion(basePart):
                             nsiqcppstyle_reporter.StartFile(os.path.dirname(basePart),
                                                             fname)
                             ProcessFile(ruleManager, eachFile, analyzedFiles)
@@ -374,6 +372,7 @@ class FilterManager:
         if f is None:
             filter.AddExclude("/.svn/")
             filter.AddExclude("/.cvs/")
+            filter.AddExclude("/.git/")
             return
 
         for line in f.readlines():
@@ -407,6 +406,7 @@ class FilterManager:
         for eachMapKey in self.filterMap.keys():
             self.filterMap[eachMapKey].AddExclude("/.cvs/")
             self.filterMap[eachMapKey].AddExclude("/.svn/")
+            self.filterMap[eachMapKey].AddExclude("/.git/")
 
         if (activeFilterName in self.filterMap):
             self.activeFilterName = activeFilterName

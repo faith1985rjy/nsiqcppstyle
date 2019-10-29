@@ -30,6 +30,7 @@ from nsiqunittest.nsiqcppstyle_unittestbase import *
 from nsiqcppstyle_reporter import *
 from nsiqcppstyle_checker import *
 from nsiqcppstyle_rulemanager import *
+from nsiqcppstyle_outputer import _consoleOutputer as console
 
 
 def RunRule(lexer, contextStack):
